@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Home</title>
+  </head>
+  <body>
+    <nav>
+      <ul class="navbarall">
+        <li><a href="#">Home</a></li>
+        <li><a href="Student_list.html">Students</a></li>
+        <li><a href="Add_new_student.html">Add Student</a></li>
+        <li><a href="Room_overview.html">Rooms</a></li>
+      </ul>
+    </nav>
+
+    <div class="homepage-header">
+      <h1 class="homepage-title">Hostel Management System</h1>
+      <p class="homepage-title">Student Check-in & Room Management</p>
+    </div>
+
+    <div class="dashboard">
+      <div class="card">
+        <h3>Total Student:</h3>
+        <p id="totalStudents"></p>
+      </div>
+      <div id="c2" class="card">
+        <h3>Avaliable Room:</h3>
+        <p id="availableRooms"></p>
+      </div>
+      <div class="card">
+        <h3>Occupied Room:</h3>
+        <p id="occupiedRooms"></p>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="heading">Quick Action</h2>
+    </div>
+    <div class="homepagebutton">
+      <button id="addStudentBtn">Register new student</button>
+      <button id="viewStudentBtn">View all student</button>
+    </div>
+    <script src="js/homepage.js"></script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Student list</title>
+  </head>
+
+  <body>
+    <nav>
+      <ul class="navbarall">
+        <li><a href="Homepage.html">Home</a></li>
+        <li><a href="#"> Students </a></li>
+        <li><a href="Add_new_student.html">Add Student </a></li>
+        <li><a href="Room_overview.html">Rooms</a></li>
+      </ul>
+    </nav>
+
+    <div class="studentpage">
+      <div class="registerstudent_addnew">
+        <h1 class="registerstudent_heading">Registered Students</h1>
+        <button
+          class="studentpage_button"
+          onclick="location.href='Add_new_student.html'"
+        >
+          Add New Student
+        </button>
+      </div>
+
+      <table class="Student_table">
+        <thead>
+          <tr class="stable_row">
+            <th>Id</th>
+            <th>Student Name</th>
+            <th>Room Number</th>
+            <th>Check-IN Date</th>
+            <th>Rent Status</th>
+            <th>PNP (profile & payments)</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTableBody"></tbody>
+      </table>
+    </div>
+   <div id="studentModal" class="modal">
+  <div class="modal-content" style="display:flex; gap:20px;">
+    
+   
+    <div style="flex:2;">
+      <span class="close" onclick="closeStudentModal()">&times;</span>
+      <h2>Student Details</h2>
+      <p><b>Name:</b> <span id="name"></span></p>
+      <p><b>CNIC:</b> <span id="cnic"></span></p>
+      <p><b>Room No:</b> <span id="room_no"></span></p>
+      <p><b>Admission Date:</b> <span id="admission_date"></span></p>
+    </div>
+
+    <div style="flex:1;">
+      <img id="student_photo" src="uploads/default.png" alt="Student Photo" width="150" />
+    </div>
+
+  </div>
+</div>
+    <script src="js/studentlist.js"></script>
+  </body>
+</html>
