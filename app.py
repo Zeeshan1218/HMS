@@ -135,7 +135,6 @@ async def add_student(
     amenities: str = Form(None),
     image: UploadFile = File(None)
 ):
-    #  CNIC FORMAT VALIDATION
     if not re.match(r"^\d{5}-\d{7}-\d{1}$", cnic):
         raise HTTPException(
             status_code=400,

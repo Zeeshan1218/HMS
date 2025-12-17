@@ -43,24 +43,23 @@
           required
         />
 
-        <div>
-          <label for="roomno">Select Room:</label>
-          <select id="roomno">
-            <option value="">Select Available Room</option>
-          </select>
-        </div>
+  <div id="roomtype">
+  <label for="roomTypeSelect">Room Type:</label>
+  <select id="roomTypeSelect">
+    <option value="">Select Room Type</option>
+    <option value="single" data-price="8000">Single</option>
+    <option value="double" data-price="7000">Double</option>
+    <option value="3-person" data-price="6000">3-person</option>
+    <option value="4-person" data-price="5000">4-person</option>
+  </select>
+</div>
 
-        <div id="roomtype" style="display: none">
-          <label for="roomTypeSelect">Room Type:</label>
-          <select id="roomTypeSelect">
-            <option value="">Select Room Type</option>
-            <option value="single" data-price="8000">Single</option>
-            <option value="double" data-price="7000">Double</option>
-            <option value="3-person" data-price="6000">3-person</option>
-            <option value="4-person" data-price="5000">4-person</option>
-          </select>
-        </div>
-
+<div id="roomNoDiv" style="display:none;">
+  <label for="roomno">Select Room Number:</label>
+  <select id="roomno">
+    <option value="">Select Available Room</option>
+  </select>
+</div>
         <div id="roomConditionDiv" style="display: none">
           <label>Room Condition:</label>
           <div class="room-condition">

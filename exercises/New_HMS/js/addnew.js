@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const API_URL = "http://127.0.0.1:8000";
 
   let roomsData = [];
+  const roomNoSelect = document.getElementById("roomno");
+  const roomNoDiv = document.getElementById("roomNoDiv");
 
   async function loadRoomsData() {
     try {
@@ -25,39 +27,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function loadAvailableRooms() {
-    try {
-      const res = await fetch(`${API_URL}/available_rooms`);
-      const data = await res.json();
-      console.log("Available rooms:", data.data);
+ async function loadAvailableRooms(selectedType) {
+  try {
 
-      roomSelect.innerHTML = `<option value="">Select Available Room</option>`;
-      if (Array.isArray(data.data)) {
-        data.data.forEach((room) => {
+    if (roomsData.length === 0) {
+      await loadRoomsData();
+    }
+
+    const res = await fetch(`${API_URL}/available_rooms`);
+    const data = await res.json();
+
+    roomSelect.innerHTML = `<option value="">Select Available Room</option>`;
+
+    if (Array.isArray(data.data)) {
+      data.data.forEach((room) => {
+        const fullRoom = roomsData.find(r => r.room_no === room.room_no);
+
+        if (!fullRoom || fullRoom.room_type === selectedType) {
           const option = document.createElement("option");
           option.value = room.room_no;
           option.textContent = `Room ${room.room_no}`;
           roomSelect.appendChild(option);
-        });
-      }
-    } catch (err) {
-      console.error("Error loading available rooms:", err);
+        }
+      });
     }
+  } catch (err) {
+    console.error("Error loading available rooms:", err);
   }
+}
+
 
   function handleRoomSelection() {
     const selectedRoomNo = parseInt(roomSelect.value);
     const selectedRoom = roomsData.find((r) => r.room_no === selectedRoomNo);
 
     if (isNaN(selectedRoomNo)) {
-      roomTypeSelect.parentElement.style.display = "none";
-      roomConditionDiv.style.display = "none";
-      amenitiesDiv.style.display = "none";
-      resetPrices();
-      return;
-    }
+  resetPrices();
+  return;
+}
 
-    roomTypeSelect.parentElement.style.display = "block";
     roomConditionDiv.style.display = "block";
     amenitiesDiv.style.display = "block";
 
@@ -65,8 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
       resetPrices();
       return;
     }
-
-    roomTypeSelect.value = selectedRoom.room_type.toLowerCase();
 
     document.querySelectorAll('input[name="room_condition"]').forEach((r) => {
       r.checked = r.value.toLowerCase() === selectedRoom.condition.toLowerCase();
@@ -192,11 +198,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         alert(" Student registered successfully!");
         form.reset();
-        roomTypeSelect.parentElement.style.display = "none";
         roomConditionDiv.style.display = "none";
         amenitiesDiv.style.display = "none";
         resetPrices();
-        await loadAvailableRooms();
+        await loadAvailableRooms(roomTypeSelect.value); 
         datesDiv.style.display = "block";
       } else {
         alert(" " + (result.detail || "Something went wrong"));
@@ -224,6 +229,21 @@ cnicField.addEventListener("input", () => {
   cnicField.value = value;
 });
 
+roomTypeSelect.addEventListener("change", async () => {
+  if (!roomTypeSelect.value) {
+    roomNoDiv.style.display = "none";
+    roomConditionDiv.style.display = "none";
+    amenitiesDiv.style.display = "none";
+    resetPrices();
+    return;
+  }
+
+  roomNoDiv.style.display = "block";
+  await loadAvailableRooms(roomTypeSelect.value);
+});
+
+
+
   roomSelect.addEventListener("change", handleRoomSelection);
   roomTypeSelect.addEventListener("change", calculateRent);
   document
@@ -240,9 +260,11 @@ cnicField.addEventListener("input", () => {
     .addEventListener("change", calculateRent);
 
   async function init() {
-    await loadRoomsData();       
-    await loadAvailableRooms();  
-    handleRoomSelection();      
-  }
+  await loadRoomsData();
+  roomtype.style.display = "block";
+  roomNoDiv.style.display = "none";
+  roomConditionDiv.style.display = "none";
+  amenitiesDiv.style.display = "none";
+}
   init();
 });
