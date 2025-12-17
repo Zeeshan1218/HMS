@@ -51,6 +51,8 @@ function displayStudents(students) {
       <td>${student.room_status ? "Paid" : "Not Paid"}</td>
       <td>
         <button onclick="openStudentModal('${student.cnic}')">View Details</button>
+        <button onclick="deleteStudent('${student.cnic}', this)">Delete</button>
+
       </td>
     `;
 
@@ -83,6 +85,30 @@ function openStudentModal(cnic) {
 function closeStudentModal() {
   studentModal.style.display = "none";
 }
+
+function deleteStudent(cnic, btn) {
+  if (!confirm("Are you sure you want to delete this student?")) return;
+
+  fetch(`${API_URL}/delete-student/${cnic}`, {
+    method: "DELETE",
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      if (result.success) {
+
+        const row = btn.closest("tr");
+        row.remove();
+        alert("Student deleted successfully!");
+      } else {
+        alert(result.message || "Failed to delete student");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("Server error, try again later.");
+    });
+}
+
 
 window.onclick = function(event) {
   if (event.target === studentModal) {

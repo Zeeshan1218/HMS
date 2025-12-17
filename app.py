@@ -9,6 +9,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi import HTTPException
 import os, re
 import uvicorn
+from fastapi.responses import JSONResponse
+
 
 app = FastAPI()
 
@@ -121,6 +123,18 @@ def add_room(room: Room):
     
     db.rooms.insert_one(room.dict())
     return {"message": f"Room {room.room_no} added successfully"}
+
+@app.delete("/delete-student/{cnic}")
+def delete_student(cnic: str):
+    student = db.studentslist.find_one({"cnic": cnic})
+    if not student:
+        return JSONResponse(status_code=404, content={"success": False, "message": "Student not found"})
+
+    db.rooms.update_one({"room_no": student["room_no"]}, {"$set": {"status": "Available"}})
+
+    db.studentslist.delete_one({"cnic": cnic})
+
+    return {"success": True, "message": "Student deleted successfully"}
 
 @app.post("/add-student")
 async def add_student(
