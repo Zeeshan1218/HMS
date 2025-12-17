@@ -45,14 +45,14 @@ function displayStudents(students) {
 
     row.innerHTML = `
       <td>${index + 1}</td>
-      <td>${student.name}</td>
-      <td>${student.room_no}</td>
-      <td>${student.admission_date}</td>
-      <td>${student.room_status ? "Paid" : "Not Paid"}</td>
+      <td><span class="name-text">${student.name}</span></td>
+      <td><span class="room-text">${student.room_no}</span></td>
+      <td><span class="date-text">${student.admission_date}</span></td>
+      <td><span class="status-text">${student.room_status ? "Paid" : "Not Paid"}</span></td>
       <td>
         <button onclick="openStudentModal('${student.cnic}')">View Details</button>
+        <button onclick="editStudent(this, '${student.cnic}')">Edit</button>
         <button onclick="deleteStudent('${student.cnic}', this)">Delete</button>
-
       </td>
     `;
 
@@ -85,6 +85,74 @@ function openStudentModal(cnic) {
 function closeStudentModal() {
   studentModal.style.display = "none";
 }
+
+function editStudent(btn, cnic) {
+  const row = btn.closest("tr");
+
+  const nameSpan = row.querySelector(".name-text");
+  const roomSpan = row.querySelector(".room-text");
+  const dateSpan = row.querySelector(".date-text");
+  const statusSpan = row.querySelector(".status-text");
+
+  const currentName = nameSpan.textContent;
+  const currentRoom = roomSpan.textContent;
+  const currentDate = dateSpan.textContent;
+  const currentStatus = statusSpan.textContent;
+
+  nameSpan.innerHTML = `<input type="text" value="${currentName}" />`;
+
+  roomSpan.innerHTML = `<input type="number" value="${currentRoom}" min="1" max="35" />`;
+
+  dateSpan.innerHTML = `<input type="date" value="${currentDate}" />`;
+
+  statusSpan.innerHTML = `
+    <select>
+      <option value="true" ${currentStatus === "Paid" ? "selected" : ""}>Paid</option>
+      <option value="false" ${currentStatus === "Not Paid" ? "selected" : ""}>Not Paid</option>
+    </select>
+  `;
+
+
+  btn.textContent = "Save";
+  btn.onclick = () => saveStudent(row, cnic);
+}
+
+function saveStudent(row, cnic) {
+  const name = row.querySelector(".name-text input").value;
+  const room_no = parseInt(row.querySelector(".room-text input").value);
+  const admission_date = row.querySelector(".date-text input").value;
+  const room_status = row.querySelector(".status-text select").value === "true";
+
+  fetch(`${API_URL}/update-student/${cnic}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, room_no, admission_date, room_status })
+  })
+    .then(res => res.json())
+    .then(result => {
+      if (result.success) {
+        row.querySelector(".name-text").textContent = name;
+        row.querySelector(".room-text").textContent = room_no;
+        row.querySelector(".date-text").textContent = admission_date;
+        row.querySelector(".status-text").textContent = room_status ? "Paid" : "Not Paid";
+
+        const editBtn = row.querySelector("button:nth-child(2)");
+        editBtn.textContent = "Edit";
+        editBtn.onclick = () => editStudent(editBtn, cnic);
+
+        alert("Student updated successfully!");
+      } else {
+        alert(result.message || "Failed to update student");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Server error, try again later");
+    });
+}
+
 
 function deleteStudent(cnic, btn) {
   if (!confirm("Are you sure you want to delete this student?")) return;

@@ -124,6 +124,25 @@ def add_room(room: Room):
     db.rooms.insert_one(room.dict())
     return {"message": f"Room {room.room_no} added successfully"}
 
+@app.put("/update-student/{cnic}")
+def update_student(cnic: str, data: dict):
+    student = db.studentslist.find_one({"cnic": cnic})
+    if not student:
+        return {"success": False, "message": "Student not found"}
+
+    db.studentslist.update_one(
+        {"cnic": cnic},
+        {"$set": {
+            "name": data.get("name", student["name"]),
+            "room_no": data.get("room_no", student["room_no"]),
+            "admission_date": data.get("admission_date", student["admission_date"]),
+            "room_status": data.get("room_status", student["room_status"])
+        }}
+    )
+
+    return {"success": True, "message": "Student updated successfully"}
+
+
 @app.delete("/delete-student/{cnic}")
 def delete_student(cnic: str):
     student = db.studentslist.find_one({"cnic": cnic})
