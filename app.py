@@ -26,8 +26,9 @@ client = MongoClient("mongodb+srv://admin:admin123@cluster0.s3k39ek.mongodb.net/
 db = client.HMS
 
 db.studentslist.create_index("cnic", unique=True)
+BASE_ROOMS = 30  
 
-TOTAL_ROOMS = 35
+
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)  
 
@@ -38,6 +39,8 @@ class Room(BaseModel):
     status: str 
     amenities: List[str] = []
     condition: str = "Average"
+    capacity: int = 1
+    current_occupancy: int = 0
 
 class Student(BaseModel):
     name: str
@@ -60,8 +63,9 @@ class StudentResponse(BaseModel):
 @app.get("/stats")
 def get_stats():
     total_students = db.studentslist.count_documents({})
-    occupied_rooms = db.studentslist.count_documents({"room_no": {"$exists": True}})
-    available_rooms = TOTAL_ROOMS - occupied_rooms
+
+    occupied_rooms = db.rooms.count_documents({"status": "Occupied"})
+    available_rooms = db.rooms.count_documents({"status": "Available"})
 
     return {
         "total_students": total_students,
@@ -109,11 +113,15 @@ def get_rooms():
 
 @app.get("/available_rooms")
 def get_available_rooms():
-    students = list(db.studentslist.find({}, {"_id": 0, "room_no": 1}))
-    occupied_rooms = {s["room_no"] for s in students}
-    available_rooms = [i for i in range(1, TOTAL_ROOMS + 1) if i not in occupied_rooms]
+    rooms = list(db.rooms.find(
+        {"status": "Available"}, 
+        {"_id": 0, "room_no": 1, "room_type": 1, "condition": 1, "amenities": 1}
+    ))
+    return {
+        "data": rooms,
+        "total_available": len(rooms)
+    }
 
-    return {"data": [{"room_no": r} for r in available_rooms], "total_available": len(available_rooms)}
 
 @app.post("/add-room")
 def add_room(room: Room):
@@ -149,7 +157,19 @@ def delete_student(cnic: str):
     if not student:
         return JSONResponse(status_code=404, content={"success": False, "message": "Student not found"})
 
-    db.rooms.update_one({"room_no": student["room_no"]}, {"$set": {"status": "Available"}})
+    room = db.rooms.find_one({"room_no": student["room_no"]})
+    if room:
+        current_occupancy = room.get("current_occupancy", 1)
+        new_occupancy = max(0, current_occupancy - 1)
+        new_status = "Available" if new_occupancy == 0 else room.get("status", "Occupied")
+        
+        db.rooms.update_one(
+            {"room_no": student["room_no"]}, 
+            {"$set": {
+                "current_occupancy": new_occupancy,
+                "status": new_status
+            }}
+        )
 
     db.studentslist.delete_one({"cnic": cnic})
 
@@ -183,7 +203,7 @@ async def add_student(
         ext = image.filename.split(".")[-1].lower()
         if ext == "jfif":
             ext = "jpg"
-        if ext not in ["png", "jpg", "jpeg","jfif" ]:
+        if ext not in ["png", "jpg", "jpeg"]:
             raise HTTPException(status_code=400, detail="Only png, jpg, jpeg, jfif, images are allowed.")
 
         filename = f"{uuid4()}.{ext}"
@@ -194,18 +214,39 @@ async def add_student(
 
     room = db.rooms.find_one({"room_no": room_no})
     if not room:
+        capacity_map = {"single": 1, "double": 2, "3-person": 3, "4-person": 4}
+        capacity = capacity_map.get(room_type.lower(), 1)
         new_room = {
             "room_no": room_no,
             "room_type": room_type,
             "status": "Occupied",
             "base_price": 5000 if room_type.lower() == "single" else 8000,
-            "condition": "Average"
+            "condition": "Average",
+            "capacity": capacity,
+            "current_occupancy": 1
         }
         db.rooms.insert_one(new_room)
     else:
-        if room.get("status") == "Occupied":
-            return {"error": f"Room {room_no} is already occupied"}
-        db.rooms.update_one({"room_no": room_no}, {"$set": {"status": "Occupied"}})
+        capacity = room.get("capacity", 1)
+        current_occupancy = room.get("current_occupancy", 0)
+        
+        if current_occupancy >= capacity:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Room {room_no} is full. Capacity: {capacity}, Current occupancy: {current_occupancy}"
+            )
+        
+        new_occupancy = current_occupancy + 1
+        new_status = "Occupied" if new_occupancy >= capacity else room.get("status", "Available")
+        
+        db.rooms.update_one(
+            {"room_no": room_no}, 
+            {"$set": {
+                "current_occupancy": new_occupancy,
+                "status": new_status
+            }}
+        )
+
 
     student_doc = {
         "name": name,
@@ -242,6 +283,90 @@ def student_serializer(student):
     }
 
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+
+@app.post("/add-multiple-rooms")
+def add_multiple_rooms(data: dict):
+    count = data.get("count", 1)
+    
+    existing_rooms = list(db.rooms.find({}, {"_id": 0, "room_no": 1}))
+    BASE_ROOM = 30
+    max_room_no = max([r["room_no"] for r in existing_rooms], default=BASE_ROOM - 1)
+
+    new_rooms = []
+    for i in range(1, count + 1):
+        room_no = max_room_no + i
+        existing = db.rooms.find_one({"room_no": room_no})
+
+        if existing:
+            if existing["status"] == "Maintenance":
+                db.rooms.update_one(
+                    {"room_no": room_no},
+                    {"$set": {"status": "Available"}}
+            )
+            new_rooms.append(room_no)
+        else:
+            db.rooms.insert_one({
+    "room_no": room_no,
+    "status": "Available",
+    "room_type": "single",
+    "base_price": 5000,
+    "condition": "Average",
+    "amenities": [],
+    "capacity": 1,
+    "current_occupancy": 0
+})
+            new_rooms.append(room_no)
+
+    return {"message": f"Added rooms: {new_rooms}"}
+
+
+@app.delete("/remove-room/{room_no}")
+def remove_room_api(room_no: int):
+    room = db.rooms.find_one({"room_no": room_no})
+    if not room:
+        return {"error": f"Room {room_no} does not exist"}
+    
+    if room["status"] == "Occupied":
+        return {"error": f"Room {room_no} is occupied and cannot be removed"}
+    
+    
+    max_room_no = max([r["room_no"] for r in db.rooms.find({}, {"_id": 0, "room_no": 1})])
+    if room_no == max_room_no:
+        db.rooms.delete_one({"room_no": room_no})
+        return {"message": f"Room {room_no} removed completely"}
+    else:
+        
+        db.rooms.update_one({"room_no": room_no}, {"$set": {"status": "Maintenance"}})
+        return {"message": f"Room {room_no} marked as Maintenance"}
+    
+@app.delete("/remove-last-rooms/{count}")
+def remove_last_rooms(count: int):
+    rooms = list(db.rooms.find({}, {"room_no": 1, "status": 1}))
+    if not rooms:
+        return {"error": "No rooms exist"}
+
+    
+    rooms.sort(key=lambda r: r["room_no"], reverse=True)
+
+    removed = []
+    for room in rooms:
+        if count == 0:
+            break
+        
+        if room["status"] == "Occupied":
+            continue
+
+        if room["room_no"] > BASE_ROOMS:
+            db.rooms.delete_one({"room_no": room["room_no"]})
+            removed.append(room["room_no"])
+            count -= 1
+
+    if not removed:
+        return {"message": "No removable rooms found (base rooms protected or occupied)"}
+
+    return {"message": f"Removed rooms: {removed}"}
+  
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

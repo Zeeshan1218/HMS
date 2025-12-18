@@ -1,156 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add New Student</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
 
-  <body>
-    <nav>
-      <ul class="navbarall">
-        <li><a href="Homepage.html">Home</a></li>
-        <li><a href="Student_list.html">Students</a></li>
-        <li><a href="#">Add New Student</a></li>
-        <li><a href="Room_overview.html">Rooms</a></li>
-      </ul>
-    </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add New Student</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-    <div class="homepage-header">
-      <h1>Add New Student</h1>
-    </div>
+<body>
+  <nav>
+    <ul class="navbarall">
+      <li><a href="Homepage.html">Home</a></li>
+      <li><a href="Student_list.html">Students</a></li>
+      <li><a href="#">Add New Student</a></li>
+      <li><a href="Room_overview.html">Rooms</a></li>
+      <li><a href="Add_room.html">Add Room</a></li>
+    </ul>
+  </nav>
 
-    <div class="studentpage">
-      <form class="newstd_form">
-        <div>
-          <label for="name">Student Name:</label>
-          <input
-            type="text"
-            id="name"
-            placeholder="Enter Student Name"
-            required
-          />
+  <div class="homepage-header">
+    <h1>Add New Student</h1>
+  </div>
+
+  <div class="studentpage">
+    <form class="newstd_form">
+      <div>
+        <label for="name">Student Name:</label>
+        <div id="nameError" style="color:red"></div>
+        <input type="text" id="name" placeholder="Enter Student Name" required />
+      </div>
+      <label for="name">Student CNIC:</label>
+
+      <div id="cnicError" style="color:red"></div>
+      <input type="text" id="cnic" placeholder="XXXXX-XXXXXXX-X" maxlength="15" inputmode="numeric"
+        title="Enter CNIC in format XXXXX-XXXXXXX-X" required />
+
+      <div id="roomtype">
+        <label for="roomTypeSelect">Room Type:</label>
+        <select id="roomTypeSelect">
+          <option value="">Select Room Type</option>
+          <option value="single" data-price="8000">Single</option>
+          <option value="double" data-price="7000">Double</option>
+          <option value="3-person" data-price="6000">3-person</option>
+          <option value="4-person" data-price="5000">4-person</option>
+        </select>
+      </div>
+
+      <div id="roomNoDiv" style="display:none;">
+        <label for="roomno">Select Room Number:</label>
+        <select id="roomno">
+          <option value="">Select Available Room</option>
+        </select>
+      </div>
+      <div id="roomConditionDiv" style="display: none">
+        <label>Room Condition:</label>
+        <div class="room-condition">
+          <label><input type="radio" name="room_condition" value="excellent" data-price="300" />
+            Excellent (+1000)</label>
+          <label><input type="radio" name="room_condition" value="good" data-price="500" />
+            Good (+500)</label>
+          <label><input type="radio" name="room_condition" value="average" data-price="300" />
+            Average (+0)</label>
         </div>
-        <label for="name">Student CNIC:</label>
-        <input
-          type="text"
-          id="cnic"
-          placeholder="XXXXX-XXXXXXX-X"
-          maxlength="15"
-          inputmode="numeric"
-          title="Enter CNIC in format XXXXX-XXXXXXX-X"
-          required
-        />
+      </div>
 
-  <div id="roomtype">
-  <label for="roomTypeSelect">Room Type:</label>
-  <select id="roomTypeSelect">
-    <option value="">Select Room Type</option>
-    <option value="single" data-price="8000">Single</option>
-    <option value="double" data-price="7000">Double</option>
-    <option value="3-person" data-price="6000">3-person</option>
-    <option value="4-person" data-price="5000">4-person</option>
-  </select>
-</div>
-
-<div id="roomNoDiv" style="display:none;">
-  <label for="roomno">Select Room Number:</label>
-  <select id="roomno">
-    <option value="">Select Available Room</option>
-  </select>
-</div>
-        <div id="roomConditionDiv" style="display: none">
-          <label>Room Condition:</label>
-          <div class="room-condition">
-            <label
-              ><input
-                type="radio"
-                name="room_condition"
-                value="excellent"
-                data-price="300"
-              />
-              Excellent (+1000)</label
-            >
-            <label
-              ><input
-                type="radio"
-                name="room_condition"
-                value="good"
-                data-price="500"
-              />
-              Good (+500)</label
-            >
-            <label
-              ><input
-                type="radio"
-                name="room_condition"
-                value="average"
-                data-price="300"
-              />
-              Average (+0)</label
-            >
-          </div>
+      <div id="amenitiesDiv" style="display: none">
+        <label>Amenities:</label>
+        <div class="amenities">
+          <label><input type="checkbox" name="amenities" value="wifi" data-price="200" />
+            WiFi (+200)</label>
+          <label><input type="checkbox" name="amenities" value="ac" data-price="500" />
+            AC (+500)</label>
+          <label><input type="checkbox" name="amenities" value="fridge" data-price="300" />
+            Fridge (+300)</label>
         </div>
+      </div>
 
-        <div id="amenitiesDiv" style="display: none">
-          <label>Amenities:</label>
-          <div class="amenities">
-            <label
-              ><input
-                type="checkbox"
-                name="amenities"
-                value="wifi"
-                data-price="200"
-              />
-              WiFi (+200)</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                name="amenities"
-                value="ac"
-                data-price="500"
-              />
-              AC (+500)</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                name="amenities"
-                value="fridge"
-                data-price="300"
-              />
-              Fridge (+300)</label
-            >
-          </div>
-        </div>
+      <div id="datesDiv">
+        <label for="checkin_date">Check-in Date:</label>
+        <input type="date" id="checkin_date" />
 
-        <div id="datesDiv">
-          <label for="checkin_date">Check-in Date:</label>
-          <input type="date" id="checkin_date" />
+        <label for="checkout_date">Check-out Date:</label>
+        <input type="date" id="checkout_date" />
+      </div>
 
-          <label for="checkout_date">Check-out Date:</label>
-          <input type="date" id="checkout_date" />
-        </div>
+      <label for="image">Upload Student Image:</label>
+      <input type="file" name="image" id="image" accept="image/*" />
 
-        <label for="image">Upload Student Image:</label>
-        <input type="file" name="image" id="image" accept="image/*" />
+      <div class="price-display">
+        <p>Room Charges: <span id="baseRoom">0</span></p>
+        <p>Condition Price: <span id="conditionPrice">0</span></p>
+        <p>Amenities Price: <span id="amenitiesPrice">0</span></p>
+        <p>Total Rent (Based on Days): <span id="monthlyRent">0</span></p>
+      </div>
 
-        <div class="price-display">
-          <p>Room Charges: <span id="baseRoom">0</span></p>
-          <p>Condition Price: <span id="conditionPrice">0</span></p>
-          <p>Amenities Price: <span id="amenitiesPrice">0</span></p>
-          <p>Total Rent (Based on Days): <span id="monthlyRent">0</span></p>
-        </div>
+      <div>
+        <label><input type="checkbox" id="rent" /> Rent Paid</label>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
 
-        <div>
-          <label><input type="checkbox" id="rent" /> Rent Paid</label>
-        </div>
-                <button type="submit">Submit</button>
-      </form>
-    </div>
+  <script src="js/addnew.js"></script>
+</body>
 
-    <script src="js/addnew.js"></script>
-  </body>
 </html>

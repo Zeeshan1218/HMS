@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add New Room</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <nav>
+    <ul class="navbarall">
+      <li><a href="Homepage.html">Home</a></li>
+      <li><a href="Student_list.html">Students</a></li>
+      <li><a href="Add_new_student.html">Add New Student</a></li>
+      <li><a href="Room_overview.html">Rooms</a></li>
+      <li><a href="#">Add Room</a></li>
+    </ul>
+  </nav>
+
+  <div class="homepage-header">
+    <h1>Add New Room</h1>
+  </div>
+
+  <div class="studentpage">
+    <form class="newroom_form">
+      <div>
+        <label for="room_no">Room Number:<span style="color: red;"> *</span></label>
+        <input type="number" id="room_no" placeholder="Enter Room Number" required min="1" />
+        <small class="error-message" id="roomNoError"></small>
+      </div>
+
+      <div id="roomtype">
+        <label for="roomTypeSelect">Room Type:<span style="color: red;"> *</span></label>
+        <select id="roomTypeSelect" required>
+          <option value="">Select Room Type</option>
+          <option value="single" data-price="8000">Single (1 person)</option>
+          <option value="double" data-price="7000">Double (2 persons)</option>
+          <option value="3-person" data-price="6000">3-person</option>
+          <option value="4-person" data-price="5000">4-person</option>
+        </select>
+        <small class="error-message" id="roomTypeError"></small>
+      </div>
+
+      <div>
+        <label>Room Condition:<span style="color: red;"> *</span></label>
+        <div class="room-condition">
+          <label>
+            <input type="radio" name="room_condition" value="excellent" required />
+            Excellent
+          </label>
+          <label>
+            <input type="radio" name="room_condition" value="good" />
+            Good
+          </label>
+          <label>
+            <input type="radio" name="room_condition" value="average" checked />
+            Average
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label>Amenities:</label>
+        <div class="amenities">
+          <label>
+            <input type="checkbox" name="amenities" value="wifi" />
+            WiFi
+          </label>
+          <label>
+            <input type="checkbox" name="amenities" value="ac" />
+            AC
+          </label>
+          <label>
+            <input type="checkbox" name="amenities" value="fridge" />
+            Fridge
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label for="base_price">Base Price:<span style="color: red;"> *</span></label>
+        <input type="number" id="base_price" placeholder="Enter Base Price" required min="0" value="5000" />
+        <small class="help-text">Price will auto-update based on room type selection</small>
+      </div>
+
+      <button type="submit">Add Room</button>
+    </form>
+  </div>
+
+  <script src="js/addroom.js"></script>
+</body>
+
+</html>

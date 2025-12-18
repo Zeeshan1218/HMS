@@ -221,7 +221,6 @@ nav {
   box-sizing: border-box;
 }
 
-#roomtype, 
 #roomConditionDiv,
 #amenitiesDiv {
   width: 100%;
@@ -393,4 +392,138 @@ button {
 
 .Student_table button:hover {
   background-color: #0b7dda;
+}
+
+
+.clickable-card {
+  cursor: pointer;
+}
+
+.clickable-card:hover {
+  transform: translateY(-6px);
+  background: #f9f9f9;
+}
+
+.room-control-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  font-family: 'Inter', sans-serif;
+  margin-top: 30px;
+}
+
+.room-control {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.room-control label {
+  font-weight: bold;
+}
+
+.room-control input {
+  width: 120px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.room-control button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2196F3;
+  color: white;
+  cursor: pointer;
+}
+
+.room-control button:hover {
+  background-color: #0b7dda;
+}
+
+.rooms-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.card-room {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 100px;
+  max-width: 120px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-room.available p {
+  color: green;
+  font-weight: bold;
+}
+
+.card-room.occupied p {
+  color: red;
+  font-weight: bold;
+}
+
+.card-room.maintenance p {
+  color: orange;
+  font-weight: bold;
+}
+
+.newroom_form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.newroom_form input,
+.newroom_form select,
+.newroom_form button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.newroom_form button {
+  background: linear-gradient(to right, #2196f3, #9c27b0);
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.newroom_form button:hover {
+  background: linear-gradient(to right, #9c27b0, #2196f3);
+}
+
+.error-message {
+  color: #d32f2f;
+  font-size: 12px;
+  display: block;
+  margin-top: 4px;
+}
+
+.help-text {
+  color: #666;
+  font-size: 12px;
+  display: block;
+  margin-top: 4px;
 }

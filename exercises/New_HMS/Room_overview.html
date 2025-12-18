@@ -1,37 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <nav>
-      <ul class="navbarall">
-        <li><a href="Homepage.html">Home</a></li>
-        <li><a href="Student_list.html">Students</a></li>
-        <li><a href="Add_new_student.html">Add New Student</a></li>
-        <li><a href="#">Rooms</a></li>
-      </ul>
-    </nav>
-    <h2 class="homepage-header">Room Overview</h2>
-    <div class="dashboard">
-      <div class="card">
-        <h4>Total Students</h4>
-        <p id="totalStudents"></p>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <nav>
+    <ul class="navbarall">
+      <li><a href="Homepage.html">Home</a></li>
+      <li><a href="Student_list.html">Students</a></li>
+      <li><a href="Add_new_student.html">Add New Student</a></li>
+      <li><a href="#">Rooms</a></li>
+      <li><a href="Add_room.html">Add Room</a></li>
+    </ul>
+  </nav>
+  <h2 class="homepage-header">Room Overview</h2>
+  <div class="dashboard">
+    <div class="card">
+      <h4>Total Students</h4>
+      <p id="totalStudents"></p>
+    </div>
+    <div class="card">
+      <h4>Available Rooms</h4>
+      <p id="availableRooms"></p>
+    </div>
+    <div class="card">
+      <h4>Occupied Rooms</h4>
+      <p id="occupiedRooms"></p>
+    </div>
+    <div class="card clickable-card" id="manageRoomCard">
+      <h3>Add / Remove Room</h3>
+      <p>Manage rooms</p>
+    </div>
+  </div>
+  <div id="manageRoomPanel" style="display: none; margin: 20px; text-align: center">
+    <div class="room-control-container">
+      <h2>Manage Rooms</h2>
+
+      <div class="room-control">
+        <label>Add Rooms</label>
+        <input type="number" id="addRoomCount" min="1" />
+        <button onclick="addRoom()">Add</button>
       </div>
-      <div class="card">
-        <h4>Available Rooms</h4>
-        <p id="availableRooms"></p>
+
+      <div class="room-control">
+        <label>Remove Last Rooms</label>
+        <input type="number" id="removeLastCount" min="1" />
+        <button onclick="removeLastRooms()">Remove</button>
       </div>
-      <div class="card">
-        <h4>Occupied Rooms</h4>
-        <p id="occupiedRooms"></p>
+
+      <div class="room-control">
+        <label>Remove Specific Room</label>
+        <input type="number" id="removeRoomNumber" min="1" />
+        <button onclick="removeRoom()">Remove</button>
       </div>
+
+
+      <div id="roomsContainer" class="rooms-container"></div>
+
+
     </div>
 
     <h3 class="homepage-header">Room Status</h3>
     <div class="dashboard" id="roomStatusContainer"></div>
     <script src="js/roomoverview.js"></script>
-  </body>
+</body>
 </html>
